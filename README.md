@@ -62,12 +62,12 @@ app.get('/authenticate', (req, res) => {
 app.post('/get-tokens', (req, res) => {
     const { tokens } = await getGoogleOauth2ClientAndTokens(req.body.code)
     const { access_token, refresh_token } = tokens
-    // do what you want with your tokens...
+    // do what you want with your tokens (save the refresh token in database for example)
 })
 
 // 3. send a mail using the token you obtained
 app.get('/send-mail', (req, res) => {
-    const refreshToken = getRefreshTokenFromDatabase() // get it the way you like
+    const refreshToken // get it the way you like
 
     await sendMail({
       expires: '',
@@ -85,7 +85,7 @@ app.listen(port, () => console.log(`Server is running on http://localhost:${port
 
 ## Environment variables
 
-To use Google mailing with OAuth2, these environment variables must first be made accessible:
+To use frontboi's mailing utility, these environment variables must be accessible at runtime:
 
 - `GOOGLE_OAUTH_CLIENT_ID`
 - `GOOGLE_OAUTH_SECRET`

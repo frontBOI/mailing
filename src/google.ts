@@ -3,10 +3,10 @@ import { GoogleOAuthClientAndTokens } from '../types/google.d'
 import { google } from 'googleapis'
 import { OAuth2Client } from 'googleapis-common'
 
-export async function authenticateGmailOauth(type: string) {
+export async function authenticateGmailOauth(state?: string) {
   const oauth2Client = getGoogleOauth2Client()
   const authUrl = oauth2Client.generateAuthUrl({
-    state: type,
+    state,
     access_type: 'offline',
     prompt: 'consent', // have the refresh token delivered every time
     scope: ['https://mail.google.com/', 'https://www.googleapis.com/auth/userinfo.email'],
@@ -28,7 +28,7 @@ export async function getGoogleOauth2ClientAndTokens(code: string): Promise<Goog
   const { tokens } = await oauth2Client.getToken(code)
   oauth2Client.setCredentials(tokens)
   return {
-    googleOauth2Client: oauth2Client,
+    oauth2Client,
     tokens,
   }
 }

@@ -3,7 +3,7 @@ import { forgeAccessToken } from './google'
 
 import nodemailer from 'nodemailer'
 
-export async function sendMailWithoutToken(params: SendMailParams) {
+export async function sendMail(params: SendMailParams) {
   const { to, from, body, subject, refreshToken, attachments } = params
   const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID
   const clientSecret = process.env.GOOGLE_OAUTH_SECRET
