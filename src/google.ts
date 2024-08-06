@@ -3,7 +3,7 @@ import { GoogleOAuthClientAndTokens } from '../types/google.d'
 import { google } from 'googleapis'
 import { OAuth2Client } from 'googleapis-common'
 
-export async function authenticateGmailOauth(state?: string) {
+export function authenticateGmailOauth(state?: string) {
   const oauth2Client = getGoogleOauth2Client()
   const authUrl = oauth2Client.generateAuthUrl({
     state,
