@@ -9,8 +9,7 @@
   "files": [
     "README.md",
     "package.json",
-    "dist",
-    "types"
+    "dist"
   ],
   "repository": {
     "type": "git",
@@ -18,7 +17,7 @@
   },
   "scripts": {
     "prepare": "if [[ $NODE_ENVIRONMENT != \"production\" ]]; then husky install; fi",
-    "prepublish": "npx tsc"
+    "prepublishOnly": "npx tsc"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.2.1",
