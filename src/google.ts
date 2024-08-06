@@ -3,8 +3,8 @@ import { GoogleOAuthClientAndTokens } from '../types/google.d'
 import { google } from 'googleapis'
 import { OAuth2Client } from 'googleapis-common'
 
-export function authenticateGmailOauth(state?: string): string {
-  const oauth2Client = getGoogleOauth2Client()
+export function generateOAuthUrl(state?: string): string {
+  const oauth2Client = getAuthClient()
   const authUrl = oauth2Client.generateAuthUrl({
     state,
     access_type: 'offline',
@@ -15,7 +15,7 @@ export function authenticateGmailOauth(state?: string): string {
   return authUrl
 }
 
-export function getGoogleOauth2Client(): OAuth2Client {
+export function getAuthClient(): OAuth2Client {
   const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID
   const clientSecret = process.env.GOOGLE_OAUTH_SECRET
   const googleRedirectURI = process.env.GOOGLE_REDIRECT_URI
@@ -23,8 +23,8 @@ export function getGoogleOauth2Client(): OAuth2Client {
   return oauth2Client
 }
 
-export async function getGoogleOauth2ClientAndTokens(code: string): Promise<GoogleOAuthClientAndTokens> {
-  const oauth2Client = getGoogleOauth2Client()
+export async function validateAuthCode(code: string): Promise<GoogleOAuthClientAndTokens> {
+  const oauth2Client = getAuthClient()
   const { tokens } = await oauth2Client.getToken(code)
   oauth2Client.setCredentials(tokens)
   return {

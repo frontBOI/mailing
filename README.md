@@ -35,9 +35,9 @@ If you prefer, you can contact me on Linkedin or by email (contact@tomblanchet.f
 
 This package is meant to facilitate the integration of Google's gmail API and OAuth2 for mailing. As such, it provides functions to generate Google OAuth2 client and access/refresh token to keep so you can use it for mail sending.
 
-- `authenticateGmailOauth`: returns an authentication URL to redirect your client to so that it authorizes OAuth connection.
-- `getGoogleOauth2ClientAndTokens`: when a user successfuly authorized OAuth, he gets redirect to `GOOGLE_REDIRECT_URI` with a code in query params. Provide this code to this function in order to exchange it for access and refresh tokens.
-- `getGoogleOauth2Client`: simply returns a `googleapis` client.
+- `generateOAuthUrl`: returns an authentication URL to redirect your client to so that it authorizes OAuth connection.
+- `validateAuthCode`: when a user successfuly authorized OAuth, he gets redirect to `GOOGLE_REDIRECT_URI` with a code in query params. Provide this code to this function in order to exchange it for access and refresh tokens.
+- `getAuthClient`: simply returns a `googleapis` client.
 - `forgeAccessToken`: provide a refresh token to this function, and it will yield you an access token.
 
 # How to use
@@ -45,7 +45,7 @@ This package is meant to facilitate the integration of Google's gmail API and OA
 Here is an implementation example in an Express server:
 
 ```typescript
-import { authenticateGmailOauth, getGoogleOauth2Client, sendMail } from '@frontboi/mailing'
+import { generateOAuthUrl, validateAuthCode, sendMail } from '@frontboi/mailing'
 
 import express from 'express'
 
@@ -54,13 +54,13 @@ const app = express()
 // 1. redirect the user to the Google OAuth2 page, in order to get a code that will be used in the next step
 //    the code will be sent to the GOOGLE_REDIRECT_URI endpoint - you have configured this endpoint in the Google cloud console
 app.get('/authenticate', (req, res) => {
-  const authUrl = authenticateGmailOauth()
+  const authUrl = generateOAuthUrl()
   res.redirect(authUrl)
 })
 
 // 2. request this endpoint with the code you obtained earlier
 app.post('/get-tokens', (req, res) => {
-    const { tokens } = await getGoogleOauth2ClientAndTokens(req.body.code)
+    const { tokens } = await validateAuthCode(req.body.code)
     const { access_token, refresh_token } = tokens
     // do what you want with your tokens (save the refresh token in database for example)
 })
