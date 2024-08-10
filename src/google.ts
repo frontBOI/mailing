@@ -1,8 +1,24 @@
-import { GoogleOAuthClientAndTokens } from '../types/google.d'
 import { checkEnvironmentVariables } from './utils'
 
 import { google } from 'googleapis'
 import { OAuth2Client } from 'googleapis-common'
+
+function getAuthClient(refreshToken?: string): OAuth2Client {
+  checkEnvironmentVariables()
+
+  const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID
+  const clientSecret = process.env.GOOGLE_OAUTH_SECRET
+  const googleRedirectURI = process.env.GOOGLE_REDIRECT_URI
+
+  if (refreshToken) {
+    const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, 'https://developers.google.com/oauthplayground')
+    oauth2Client.setCredentials({ refresh_token: refreshToken })
+    return oauth2Client
+  }
+
+  const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, googleRedirectURI)
+  return oauth2Client
+}
 
 export function generateOAuthUrl(state?: string): string {
   const oauth2Client = getAuthClient()
@@ -16,46 +32,43 @@ export function generateOAuthUrl(state?: string): string {
   return authUrl
 }
 
-export function getAuthClient(): OAuth2Client {
-  checkEnvironmentVariables()
-
-  const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID
-  const clientSecret = process.env.GOOGLE_OAUTH_SECRET
-  const googleRedirectURI = process.env.GOOGLE_REDIRECT_URI
-  const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, googleRedirectURI)
-  return oauth2Client
-}
-
-export async function validateAuthCode(code: string): Promise<GoogleOAuthClientAndTokens> {
+export async function validateAuthCode(code: string) {
   const oauth2Client = getAuthClient()
-  const { tokens } = await oauth2Client.getToken(code)
-  oauth2Client.setCredentials(tokens)
-  return {
-    oauth2Client,
-    tokens,
-  }
+  const retval = await oauth2Client.getToken(code)
+  return retval
 }
 
 export async function forgeAccessToken(refreshToken: string): Promise<{ accessToken: string; expires: string }> {
   checkEnvironmentVariables()
 
-  const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID
-  const clientSecret = process.env.GOOGLE_OAUTH_SECRET
-
-  const auth = new google.auth.OAuth2(clientId, clientSecret, 'https://developers.google.com/oauthplayground')
-  auth.setCredentials({ refresh_token: refreshToken })
-  const response = await auth.getAccessToken()
+  const oauth2Client = getAuthClient(refreshToken)
+  const response = await oauth2Client.getAccessToken()
 
   if (!response.res) {
-    throw new Error('Réponse invalide de Google: ' + response)
+    throw new Error('Invalid response from Google: ' + response)
   }
 
   if (!response.token) {
-    throw new Error("L'access token reçu de Google est null")
+    throw new Error('Access token is null')
   }
 
   return {
     accessToken: response.token,
     expires: response.res.config.data.expiry_date,
   }
+}
+
+export async function getUserInfos(refreshToken: string) {
+  const { accessToken } = await forgeAccessToken(refreshToken)
+  const oauth2Client = new google.auth.OAuth2()
+
+  oauth2Client.setCredentials({ access_token: accessToken })
+  let oauth2 = google.oauth2({
+    auth: oauth2Client,
+    version: 'v2',
+  })
+
+  const { data } = await oauth2.userinfo.get()
+
+  return data
 }

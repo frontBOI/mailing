@@ -37,8 +37,24 @@ This package is meant to facilitate the integration of Google's gmail API and OA
 
 - `generateOAuthUrl`: returns an authentication URL to redirect your client to so that it authorizes OAuth connection.
 - `validateAuthCode`: when a user successfuly authorized OAuth, he gets redirect to `GOOGLE_REDIRECT_URI` with a code in query params. Provide this code to this function in order to exchange it for access and refresh tokens.
-- `getAuthClient`: simply returns a `googleapis` client.
 - `forgeAccessToken`: provide a refresh token to this function, and it will yield you an access token.
+- `getUserInfos`: returns general informations about the connected user.
+
+## Setup
+
+### Google console
+
+You will need to setup a Google Console project. Go to [this url](https://console.cloud.google.com), and then create your application. You must include these two scopes: `/auth/userinfo.email` and `/auth/gmail.send` for this package to work.
+
+### Environment variables
+
+To use frontboi's mailing utility, these environment variables must be accessible at runtime:
+
+- `GOOGLE_OAUTH_CLIENT_ID`
+- `GOOGLE_OAUTH_SECRET`
+- `GOOGLE_REDIRECT_URI`
+
+> These values are obtained via after you have created you Google Console project.
 
 # How to use
 
@@ -82,13 +98,3 @@ app.get('/send-mail', (req, res) => {
 
 app.listen(port, () => console.log(`Server is running on http://localhost:${port}`))
 ```
-
-## Environment variables
-
-To use frontboi's mailing utility, these environment variables must be accessible at runtime:
-
-- `GOOGLE_OAUTH_CLIENT_ID`
-- `GOOGLE_OAUTH_SECRET`
-- `GOOGLE_REDIRECT_URI`
-
-These values can be obtained via the [Google console](console.cloud.google.com), where you are able to create a new application to then configure it correctly in order to retrieve your keys.
