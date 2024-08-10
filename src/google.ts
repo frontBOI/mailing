@@ -1,4 +1,5 @@
 import { GoogleOAuthClientAndTokens } from '../types/google.d'
+import { checkEnvironmentVariables } from './utils'
 
 import { google } from 'googleapis'
 import { OAuth2Client } from 'googleapis-common'
@@ -16,6 +17,8 @@ export function generateOAuthUrl(state?: string): string {
 }
 
 export function getAuthClient(): OAuth2Client {
+  checkEnvironmentVariables()
+
   const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID
   const clientSecret = process.env.GOOGLE_OAUTH_SECRET
   const googleRedirectURI = process.env.GOOGLE_REDIRECT_URI
@@ -34,6 +37,8 @@ export async function validateAuthCode(code: string): Promise<GoogleOAuthClientA
 }
 
 export async function forgeAccessToken(refreshToken: string): Promise<{ accessToken: string; expires: string }> {
+  checkEnvironmentVariables()
+
   const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID
   const clientSecret = process.env.GOOGLE_OAUTH_SECRET
 
