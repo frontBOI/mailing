@@ -33,12 +33,20 @@ export function generateOAuthUrl(state?: string): string {
 }
 
 export async function validateAuthCode(code: string) {
+  if (!code) {
+    throw new Error('No code provided')
+  }
+
   const oauth2Client = getAuthClient()
   const retval = await oauth2Client.getToken(code)
   return retval
 }
 
 export async function forgeAccessToken(refreshToken: string): Promise<{ accessToken: string; expires: string }> {
+  if (!refreshToken) {
+    throw new Error('No refresh token provided')
+  }
+
   checkEnvironmentVariables()
 
   const oauth2Client = getAuthClient(refreshToken)
@@ -59,6 +67,10 @@ export async function forgeAccessToken(refreshToken: string): Promise<{ accessTo
 }
 
 export async function getUserInfos(refreshToken: string) {
+  if (!refreshToken) {
+    throw new Error('No refresh token provided')
+  }
+
   const { accessToken } = await forgeAccessToken(refreshToken)
   const oauth2Client = new google.auth.OAuth2()
 
