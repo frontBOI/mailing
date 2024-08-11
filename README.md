@@ -44,7 +44,7 @@ This package is meant to facilitate the integration of Google's gmail API and OA
 
 ### Google console
 
-You will need to setup a Google Console project. Go to [this url](https://console.cloud.google.com), and then create your application. You must include these two scopes: `/auth/userinfo.email` and `/auth/gmail.send` for this package to work.
+You will need to setup a Google Console project. Go to [this url](https://console.cloud.google.com), and then create your application. You must include these two scopes: `/auth/userinfo.profile` and `/auth/gmail.send` for this package to work.
 
 ### Environment variables
 

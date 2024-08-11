@@ -26,7 +26,7 @@ export function generateOAuthUrl(state?: string): string {
     state,
     access_type: 'offline',
     prompt: 'consent', // have the refresh token delivered every time
-    scope: ['https://mail.google.com/', 'https://www.googleapis.com/auth/userinfo.email'],
+    scope: ['https://mail.google.com/', 'https://www.googleapis.com/auth/userinfo.profile'],
   })
 
   return authUrl
@@ -73,8 +73,8 @@ export async function getUserInfos(refreshToken: string) {
 
   const { accessToken } = await forgeAccessToken(refreshToken)
   const oauth2Client = new google.auth.OAuth2()
-
   oauth2Client.setCredentials({ access_token: accessToken })
+
   let oauth2 = google.oauth2({
     auth: oauth2Client,
     version: 'v2',
