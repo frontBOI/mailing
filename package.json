@@ -1,6 +1,6 @@
 {
   "name": "@frontboi/mailing",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "author": "Tom Blanchet <contact@tomblanchet.fr> (https://tomblanchet.fr)",
   "description": "Utility to make sending mail easier, particularly using Google Gmail and OAuth2.",
   "main": "dist/index.js",
@@ -9,7 +9,8 @@
   "files": [
     "README.md",
     "package.json",
-    "dist"
+    "dist",
+    "types"
   ],
   "repository": {
     "type": "git",

@@ -12,5 +12,5 @@ export interface SendMailParams {
   body: string
   subject: string
   refreshToken: string
-  attachments: Attachment[]
+  attachments?: Attachment[]
 }
