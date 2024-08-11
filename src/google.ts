@@ -26,7 +26,11 @@ export function generateOAuthUrl(state?: string): string {
     state,
     access_type: 'offline',
     prompt: 'consent', // have the refresh token delivered every time
-    scope: ['https://mail.google.com/', 'https://www.googleapis.com/auth/userinfo.profile'],
+    scope: [
+      'https://mail.google.com/',
+      'https://www.googleapis.com/auth/userinfo.email',
+      'https://www.googleapis.com/auth/userinfo.profile',
+    ],
   })
 
   return authUrl
