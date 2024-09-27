@@ -4,6 +4,10 @@ import { checkEnvironmentVariables } from './utils'
 
 import nodemailer from 'nodemailer'
 
+/**
+ * Sends an email using Nodemailer and the Google Gmail account authenticated by the refresh token provided.
+ * @param params - Email parameters (see {@link its [types](../types/nodemailer.d.ts)})
+ * */
 export async function sendMail(params: SendMailParams) {
   checkEnvironmentVariables()
 

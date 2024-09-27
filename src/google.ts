@@ -3,6 +3,11 @@ import { checkEnvironmentVariables } from './utils'
 import { google } from 'googleapis'
 import { OAuth2Client } from 'googleapis-common'
 
+/**
+ * Creates a new OAuth2Client using the environment variables provided, either from the scopes hard-listed or with the provided refresh token.
+ * @param refreshToken - (optional) The refresh token to use to authenticate the user.
+ * @returns The OAuth2Client instance.
+ * */
 function getAuthClient(refreshToken?: string): OAuth2Client {
   checkEnvironmentVariables()
 
@@ -20,6 +25,11 @@ function getAuthClient(refreshToken?: string): OAuth2Client {
   return oauth2Client
 }
 
+/**
+ * Generates the OAuth2 URL to redirect the user to in order to authenticate with Google.
+ * @param state - (optional) state string to be passed to the Google API and received back after the authentication.
+ * @returns The URL to redirect the user to.
+ * */
 export function generateOAuthUrl(state?: string): string {
   const oauth2Client = getAuthClient()
   const authUrl = oauth2Client.generateAuthUrl({
@@ -36,6 +46,11 @@ export function generateOAuthUrl(state?: string): string {
   return authUrl
 }
 
+/**
+ * Validates the authentication code received from the Google API and returns the tokens if it is valid.
+ * @param code - The authentication code received from the Google API after the user authenticates.
+ * @returns Google OAuth2 tokens.
+ * */
 export async function validateAuthCode(code: string) {
   if (!code) {
     throw new Error('No code provided')
@@ -46,6 +61,11 @@ export async function validateAuthCode(code: string) {
   return retval
 }
 
+/**
+ * Forges an access token using the refresh token provided.
+ * @param refreshToken - Google OAuth2 refresh token.
+ * @returns Google OAuth2 access token and its expiration date.
+ * */
 export async function forgeAccessToken(refreshToken: string): Promise<{ accessToken: string; expires: string }> {
   if (!refreshToken) {
     throw new Error('No refresh token provided')
@@ -70,6 +90,11 @@ export async function forgeAccessToken(refreshToken: string): Promise<{ accessTo
   }
 }
 
+/**
+ * Retrieves the user's email and profile information using the refresh token provided.
+ * @param refreshToken - Google OAuth2 refresh token.
+ * @returns user's email and profile information.
+ * */
 export async function getUserInfos(refreshToken: string) {
   if (!refreshToken) {
     throw new Error('No refresh token provided')

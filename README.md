@@ -44,7 +44,7 @@ This package is meant to facilitate the integration of Google's gmail API and OA
 
 ### Google console
 
-You will need to setup a Google Console project. Go to [this url](https://console.cloud.google.com), and then create your application. You must include these two scopes: `/auth/userinfo.profile` and `/auth/gmail.send` for this package to work.
+You will need to setup a Google Console project. Go to [this url](https://console.cloud.google.com), and then create your application. You must include these three scopes: `/auth/userinfo.email`, `/auth/userinfo.profile` and `/auth/gmail.send` for this package to work.
 
 ### Environment variables
 
@@ -61,7 +61,7 @@ To use frontboi's mailing utility, these environment variables must be accessibl
 Here is an implementation example in an Express server:
 
 ```typescript
-import { generateOAuthUrl, validateAuthCode, sendMail } from '@frontboi/mailing'
+import { generateOAuthUrl, validateAuthCode, sendMail, getUserInfos } from '@frontboi/mailing'
 
 import express from 'express'
 
@@ -85,14 +85,17 @@ app.post('/get-tokens', (req, res) => {
 app.get('/send-mail', (req, res) => {
     const refreshToken // get it the way you like
 
+    // get sender's Google profile informations
+    const { email, given_name, family_name } = await getUserInfos(refreshToken)
+
     await sendMail({
       expires: '',
+      from: email,
       refreshToken,
       attachments: [],
       subject: 'Hello Henry',
-      from: 'madeleine@gmail.com',
       to: 'henri.letesquieux@orange.fr',
-      body: 'I managed to send a mail using Gmail !',
+      body: `${given_name} ${family_name} managed to send a mail using Gmail !`,
     })
 })
 
