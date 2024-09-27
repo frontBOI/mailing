@@ -89,7 +89,6 @@ app.get('/send-mail', (req, res) => {
     const { email, given_name, family_name } = await getUserInfos(refreshToken)
 
     await sendMail({
-      expires: '',
       from: email,
       refreshToken,
       attachments: [],
